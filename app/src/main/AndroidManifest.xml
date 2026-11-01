@@ -3,6 +3,7 @@
 <application android:theme="@style/AppTheme" android:label="Knight Compass" android:allowBackup="false" android:supportsRtl="true" android:icon="@drawable/ic_compass">
 <activity android:name=".EventDetailActivity" android:exported="false"/>
 <activity android:name=".MapActivity" android:exported="false"/>
+<activity android:name=".ReviewsActivity" android:exported="false"/>
 <activity android:name=".LoginActivity" android:exported="false"/>
 <activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
 </application></manifest>

@@ -25,3 +25,18 @@ Home opens first. Today and Weekend select different local lists. Search filters
 - The third Today card has a distinct first-generation event title instead of repeating the career fair title.
 - Detail content scrolls on smaller screens. No backend, map integration, real registration, or review storage is included.
 - Build uses the installed Android Gradle Plugin 9.5.0, Gradle 9.6.0, SDK 37, Java 11 source compatibility, and Android Studio's bundled JDK. Target SDK 35 keeps this checkpoint independent of API 37 behavior changes.
+
+- app/src/main/java/edu/ucf/knightcompass/MapActivity.java (Dhyan)
+- app/src/main/java/edu/ucf/knightcompass/Review.java (Dhyan)
+- app/src/main/java/edu/ucf/knightcompass/ReviewsActivity.java (Dhyan)
+- app/src/main/res/drawable-nodpi/ucf_seal.png (Dhyan)
+- app/src/main/res/drawable/ic_car.xml (Dhyan)
+- app/src/main/res/drawable/ic_open.xml (Dhyan)
+- app/src/main/res/drawable/ic_pin.xml (Dhyan)
+- app/src/main/res/drawable/icon_cream.xml (Dhyan)
+- app/src/main/res/drawable/icon_dark.xml (Dhyan)
+- app/src/main/res/drawable/reply_rule.xml (Dhyan)
+- app/src/main/res/layout/activity_map.xml (Dhyan)
+- app/src/main/res/layout/activity_reviews.xml (Dhyan)
+- app/src/main/res/layout/dialog_review.xml (Dhyan)
+- app/src/main/res/layout/item_review.xml (Dhyan)

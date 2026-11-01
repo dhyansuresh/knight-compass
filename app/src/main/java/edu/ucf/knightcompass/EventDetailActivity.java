@@ -18,7 +18,7 @@ public class EventDetailActivity extends Activity {
         findViewById(R.id.back).setOnClickListener(v -> finish());
         findViewById(R.id.register).setOnClickListener(v -> message("Register / Join Online","Registration is a demo preview for this checkpoint."));
         findViewById(R.id.map).setOnClickListener(v -> { if(e.virtual) message("Map and Parking","This event takes place online."); else startActivity(new Intent(this,MapActivity.class).putExtra("event",index)); });
-        findViewById(R.id.reviews).setOnClickListener(v -> message("Ratings and Reviews","Event ratings and reviews will be available in a future version."));
+        findViewById(R.id.reviews).setOnClickListener(v -> startActivity(new Intent(this,ReviewsActivity.class).putExtra("event",index)));
     }
     private void set(int id,String value) { ((TextView)findViewById(id)).setText(value); }
     private void message(String title,String message) { new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("OK",null).show(); }

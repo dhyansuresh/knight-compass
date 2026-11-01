@@ -6,6 +6,12 @@ final class Event {
     Event(String title, String date, String time, String building, String room, String organizer, String contact, String about, boolean virtual) {
         this.title=title; this.date=date; this.time=time; this.building=building; this.room=room; this.organizer=organizer; this.contact=contact; this.about=about; this.virtual=virtual;
     }
+    String address() { return "4000 Central Florida Blvd, Orlando, FL"; }
+    String mapQuery() { return "UCF "+building+", "+address(); }
+    String parking() {
+        if(building.equals("Student Union")) return "Visitor parking is available in Garage H (Lot H1), adjacent to the Student Union. Rates: $2/hr, max $8/day. Pay at the kiosk or via the ParkMobile app — Zone 2441.";
+        return "Parking details for this location haven't been added yet. Contact the organizer at "+contact+" for visitor parking information.";
+    }
     static final Event[] ALL = {
         new Event("Spring Research Symposium", "Friday, April 11, 2025", "10:00 AM – 4:00 PM", "Student Union", "Pegasus Ballroom A", "College of Sciences", "research@ucf.edu", "Join faculty, graduate students, and undergraduate researchers for an afternoon of presentations, posters, and panels showcasing the latest discoveries across all disciplines. Awards will be given in seven categories. Light refreshments provided.", false),
         new Event("Career Fair – Engineering & Tech", "Wednesday, April 16, 2025", "11:00 AM – 3:00 PM", "Recreation & Wellness Center", "Main Court", "Career Services", "career@ucf.edu", "Meet employers, explore internships, and connect with professionals in engineering and technology. Bring your resume and your questions.", false),

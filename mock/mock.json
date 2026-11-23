@@ -1,0 +1,452 @@
+{
+  "uuid": "5c4dbb49-070c-458e-9d3d-f7d4d19ceef1",
+  "lastMigration": 33,
+  "name": "Knight Compass (mock of API.md)",
+  "latency": 300,
+  "port": 3000,
+  "routes": [
+    {
+      "uuid": "ae668b44-2dfd-4ddf-8e4c-39d929272a4b",
+      "method": "get",
+      "endpoint": "health",
+      "responses": [
+        {
+          "uuid": "d7406843-e29c-4a8b-a771-6a6c894a46c3",
+          "body": "{\n  \"status\": \"ok\"\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "2424b718-9819-433d-800b-969bef848c85",
+      "documentation": "Only @ucf.edu / @knights.ucf.edu emails work.",
+      "method": "post",
+      "endpoint": "auth/request-code",
+      "responses": [
+        {
+          "uuid": "ca54241d-1fd1-470b-8bd8-49b801df3815",
+          "body": "{\n  \"error\": \"not_ucf_email\",\n  \"message\": \"Use your @ucf.edu or @knights.ucf.edu email.\"\n}",
+          "statusCode": 403,
+          "label": "Not a UCF email",
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "@(knights\\.)?ucf\\.edu\\s*$",
+              "invert": true,
+              "operator": "regex_i"
+            }
+          ]
+        },
+        {
+          "uuid": "a65a6932-88c0-4ea5-a0fa-c952a5a6de4e",
+          "body": "{\n  \"message\": \"Code sent\",\n  \"expiresInSeconds\": 600,\n  \"resendAfterSeconds\": 60,\n  \"devCode\": \"123456\"\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "6aa4787a-337d-4a87-b465-4f0b86ad47cd",
+      "documentation": "The code is always 123456.",
+      "method": "post",
+      "endpoint": "auth/verify",
+      "responses": [
+        {
+          "uuid": "19dd597b-1f63-411e-a741-cdf5719f0060",
+          "body": "{\n  \"token\": \"mock-token\",\n  \"expiresAt\": \"2026-12-23T10:00:00-05:00\",\n  \"user\": {\n    \"id\": \"u1\",\n    \"email\": \"knight@ucf.edu\",\n    \"displayName\": \"knight\",\n    \"isHost\": true,\n    \"isNew\": true\n  }\n}",
+          "statusCode": 200,
+          "label": "Code 123456",
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "code",
+              "value": "123456",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "b8e2dd6c-126a-4ca3-b879-9564a90ce473",
+          "body": "{\n  \"error\": \"invalid_code\",\n  \"message\": \"That code is wrong. 4 tries left.\",\n  \"details\": {\n    \"attemptsLeft\": 4\n  }\n}",
+          "statusCode": 400,
+          "label": "Wrong code",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "47be7d0c-4856-44d5-bace-f64f43104efa",
+      "method": "get",
+      "endpoint": "me",
+      "responses": [
+        {
+          "uuid": "2fe5e43a-57a6-4a01-84f9-2616d0b6755b",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "0ec8619a-c469-4438-a1d6-003b5ad72955",
+          "body": "{\n  \"id\": \"u1\",\n  \"email\": \"knight@ucf.edu\",\n  \"displayName\": \"knight\",\n  \"isHost\": true\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "816204d8-97d2-4a6c-ab46-63ad0282c785",
+      "method": "patch",
+      "endpoint": "me",
+      "responses": [
+        {
+          "uuid": "a225fb85-f9b3-447b-8031-cca2688ac1e5",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "0091deee-9241-4b81-997a-8a91d697725f",
+          "body": "{\n  \"id\": \"u1\",\n  \"email\": \"knight@ucf.edu\",\n  \"displayName\": \"knight\",\n  \"isHost\": true\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "d2306782-0946-4c95-af04-3497e9b213fc",
+      "method": "get",
+      "endpoint": "me/saved",
+      "responses": [
+        {
+          "uuid": "d46c2f3c-ab86-4fe1-8aae-585f08d24752",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "0298a6a0-6ec4-4d1f-b6c9-053c26102e3d",
+          "body": "{\n  \"events\": [\n    {\n      \"id\": \"4152009\",\n      \"title\": \"Fall 2026 BFA Exhibition\",\n      \"category\": \"Arts Exhibit\",\n      \"tags\": [\n        \"ucf art gallery\"\n      ],\n      \"startsAt\": \"2026-11-23T10:00:00-05:00\",\n      \"endsAt\": \"2026-11-23T17:00:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"10:00\",\n      \"endTime\": \"17:00\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"10:00 AM – 5:00 PM\",\n      \"location\": \"UCF Art Gallery\",\n      \"mapUrl\": \"https://www.google.com/maps/place/School+of+Visual+Arts+and+Design/@28.6028876,-81.2031242,15z\",\n      \"mapQuery\": \"UCF Art Gallery, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Art Gallery\",\n      \"contactEmail\": \"gallery@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"Senior BFA students in art, animation, illustration, photography and more show their work in the UCF Art Gallery.\\n\\nFree and open to everyone.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4152009/fall-2026-bfa-exhibition/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": 4.5,\n        \"count\": 2\n      },\n      \"saved\": true,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    }\n  ]\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "2ca5cce9-a288-4058-9b8b-7ea07cec42e7",
+      "documentation": "range=today or range=weekend; anything else returns all.",
+      "method": "get",
+      "endpoint": "events",
+      "responses": [
+        {
+          "uuid": "46bf92e6-8e6f-4118-a7f9-69b5fbb924d8",
+          "body": "{\n  \"events\": [\n    {\n      \"id\": \"4152009\",\n      \"title\": \"Fall 2026 BFA Exhibition\",\n      \"category\": \"Arts Exhibit\",\n      \"tags\": [\n        \"ucf art gallery\"\n      ],\n      \"startsAt\": \"2026-11-23T10:00:00-05:00\",\n      \"endsAt\": \"2026-11-23T17:00:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"10:00\",\n      \"endTime\": \"17:00\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"10:00 AM – 5:00 PM\",\n      \"location\": \"UCF Art Gallery\",\n      \"mapUrl\": \"https://www.google.com/maps/place/School+of+Visual+Arts+and+Design/@28.6028876,-81.2031242,15z\",\n      \"mapQuery\": \"UCF Art Gallery, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Art Gallery\",\n      \"contactEmail\": \"gallery@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"Senior BFA students in art, animation, illustration, photography and more show their work in the UCF Art Gallery.\\n\\nFree and open to everyone.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4152009/fall-2026-bfa-exhibition/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": 4.5,\n        \"count\": 2\n      },\n      \"saved\": true,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4215418\",\n      \"title\": \"CAPS Workshop: Giving and Getting Emotional Support\",\n      \"category\": \"Health & Well-being\",\n      \"tags\": [\n        \"Counseling and Psychological Services\",\n        \"mental health\"\n      ],\n      \"startsAt\": \"2026-11-23T12:30:00-05:00\",\n      \"endsAt\": \"2026-11-23T13:30:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"12:30\",\n      \"endTime\": \"13:30\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"12:30 PM – 1:30 PM\",\n      \"location\": \"Virtual\",\n      \"mapUrl\": null,\n      \"mapQuery\": null,\n      \"parking\": null,\n      \"contactName\": \"Sheri Wadill, LMHC\",\n      \"contactEmail\": \"sheri.wadill@ucf.edu\",\n      \"contactPhone\": \"4078232811\",\n      \"about\": \"A short virtual workshop from CAPS on how to support friends and how to ask for support yourself.\",\n      \"virtual\": true,\n      \"joinUrl\": \"https://ucf-hipaa.zoom.us/j/97245375228\",\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4215418/caps-workshop-giving-and-getting-emotional-support/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4242785\",\n      \"title\": \"UCF Women's Basketball vs. Jacksonville\",\n      \"category\": \"Sports\",\n      \"tags\": [\n        \"UCF Athletics\",\n        \"Addition Financial Arena\"\n      ],\n      \"startsAt\": \"2026-11-23T18:30:00-05:00\",\n      \"endsAt\": \"2026-11-23T21:00:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"18:30\",\n      \"endTime\": \"21:00\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"6:30 PM – 9:00 PM\",\n      \"location\": \"Addition Financial Arena\",\n      \"mapUrl\": \"https://maps.app.goo.gl/ckEjpwWkRra5LCUF8\",\n      \"mapQuery\": \"Addition Financial Arena, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Athletics\",\n      \"contactEmail\": \"tconner@athletics.ucf.edu\",\n      \"contactPhone\": \"4078231000\",\n      \"about\": \"Cheer on the Knights as UCF Women's Basketball hosts Jacksonville at Addition Financial Arena.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4242785/ucf-womens-basketball-vs-jacksonville/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": 4.0,\n        \"count\": 1\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": true\n    }\n  ]\n}",
+          "statusCode": 200,
+          "label": "Today",
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "range",
+              "value": "today",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "13a098e9-f67a-4f98-8769-613db6fa9d0c",
+          "body": "{\n  \"events\": [\n    {\n      \"id\": \"4151821\",\n      \"title\": \"Blues for an Alabama Sky | Theatre UCF\",\n      \"category\": \"Concert/Performance\",\n      \"tags\": [\n        \"theatre\",\n        \"Theatre UCF\"\n      ],\n      \"startsAt\": \"2026-11-28T14:00:00-05:00\",\n      \"endsAt\": \"2026-11-28T16:30:00-05:00\",\n      \"date\": \"2026-11-28\",\n      \"startTime\": \"14:00\",\n      \"endTime\": \"16:30\",\n      \"dateLabel\": \"Saturday, November 28, 2026\",\n      \"timeLabel\": \"2:00 PM – 4:30 PM\",\n      \"location\": \"Theatre UCF: Black Box: TH 6\",\n      \"mapUrl\": \"http://map.ucf.edu/?show=6\",\n      \"mapQuery\": \"Theatre UCF: Black Box: TH 6, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF School of Performing Arts Box Office\",\n      \"contactEmail\": \"boxoffice@ucf.edu\",\n      \"contactPhone\": \"4078231500\",\n      \"about\": \"Theatre UCF performs Pearl Cleage's play set in 1930s Harlem, following five friends through one summer.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": \"https://cah.ucf.edu/events/detail/alabama-sky/\",\n      \"registrationInfo\": \"Tickets: $25 standard, $10 students w/UCF or student ID.\",\n      \"ucfUrl\": \"https://events.ucf.edu/event/4151821/blues-for-an-alabama-sky-theatre-ucf/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4253984\",\n      \"title\": \"Alcoholics Anonymous\",\n      \"category\": \"Meeting\",\n      \"tags\": [\n        \"AA\",\n        \"Support Group\"\n      ],\n      \"startsAt\": \"2026-11-29T19:00:00-05:00\",\n      \"endsAt\": \"2026-11-29T20:00:00-05:00\",\n      \"date\": \"2026-11-29\",\n      \"startTime\": \"19:00\",\n      \"endTime\": \"20:00\",\n      \"dateLabel\": \"Sunday, November 29, 2026\",\n      \"timeLabel\": \"7:00 PM – 8:00 PM\",\n      \"location\": \"Student Union 313: Admin: 313\",\n      \"mapUrl\": \"https://www.ucf.edu/location/student-union/\",\n      \"mapQuery\": \"Student Union 313: Admin: 313, University of Central Florida, Orlando, FL\",\n      \"parking\": \"Visitor parking is available in Garage H (Lot H1), adjacent to the Student Union. Rates: $2/hr, max $8/day. Pay at the kiosk or via the ParkMobile app — Zone 2441.\",\n      \"contactName\": \"Collegiate Recovery\",\n      \"contactEmail\": \"crc@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"An open AA meeting hosted by Collegiate Recovery, for anyone who wants support.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4253984/alcoholics-anonymous/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4190556\",\n      \"title\": \"Knight of Zen\",\n      \"category\": \"Recreation & Exercise\",\n      \"tags\": [\n        \"Yoga\",\n        \"destress\"\n      ],\n      \"startsAt\": \"2026-11-29T19:00:00-05:00\",\n      \"endsAt\": \"2026-11-29T19:45:00-05:00\",\n      \"date\": \"2026-11-29\",\n      \"startTime\": \"19:00\",\n      \"endTime\": \"19:45\",\n      \"dateLabel\": \"Sunday, November 29, 2026\",\n      \"timeLabel\": \"7:00 PM – 7:45 PM\",\n      \"location\": \"RWC Green Space\",\n      \"mapUrl\": \"https://www.ucf.edu/location/recreation-and-wellness-center/\",\n      \"mapQuery\": \"RWC Green Space, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Fitness\",\n      \"contactEmail\": \"fitness@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"An evening yoga session on the RWC Green Space to relax before finals.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": \"https://ucfrwc.org/Program/GetProgramDetails?courseId=11a4e1b5-27ac-4a25-b5ca-37b6b0f1c515\",\n      \"registrationInfo\": \"Registration opens one week in advance.\",\n      \"ucfUrl\": \"https://events.ucf.edu/event/4190556/knight-of-zen/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    }\n  ]\n}",
+          "statusCode": 200,
+          "label": "Weekend",
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "range",
+              "value": "weekend",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "0a5c0d0f-0fb0-4262-8e0b-712e6ca6d6e1",
+          "body": "{\n  \"events\": [\n    {\n      \"id\": \"4152009\",\n      \"title\": \"Fall 2026 BFA Exhibition\",\n      \"category\": \"Arts Exhibit\",\n      \"tags\": [\n        \"ucf art gallery\"\n      ],\n      \"startsAt\": \"2026-11-23T10:00:00-05:00\",\n      \"endsAt\": \"2026-11-23T17:00:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"10:00\",\n      \"endTime\": \"17:00\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"10:00 AM – 5:00 PM\",\n      \"location\": \"UCF Art Gallery\",\n      \"mapUrl\": \"https://www.google.com/maps/place/School+of+Visual+Arts+and+Design/@28.6028876,-81.2031242,15z\",\n      \"mapQuery\": \"UCF Art Gallery, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Art Gallery\",\n      \"contactEmail\": \"gallery@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"Senior BFA students in art, animation, illustration, photography and more show their work in the UCF Art Gallery.\\n\\nFree and open to everyone.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4152009/fall-2026-bfa-exhibition/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": 4.5,\n        \"count\": 2\n      },\n      \"saved\": true,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4215418\",\n      \"title\": \"CAPS Workshop: Giving and Getting Emotional Support\",\n      \"category\": \"Health & Well-being\",\n      \"tags\": [\n        \"Counseling and Psychological Services\",\n        \"mental health\"\n      ],\n      \"startsAt\": \"2026-11-23T12:30:00-05:00\",\n      \"endsAt\": \"2026-11-23T13:30:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"12:30\",\n      \"endTime\": \"13:30\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"12:30 PM – 1:30 PM\",\n      \"location\": \"Virtual\",\n      \"mapUrl\": null,\n      \"mapQuery\": null,\n      \"parking\": null,\n      \"contactName\": \"Sheri Wadill, LMHC\",\n      \"contactEmail\": \"sheri.wadill@ucf.edu\",\n      \"contactPhone\": \"4078232811\",\n      \"about\": \"A short virtual workshop from CAPS on how to support friends and how to ask for support yourself.\",\n      \"virtual\": true,\n      \"joinUrl\": \"https://ucf-hipaa.zoom.us/j/97245375228\",\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4215418/caps-workshop-giving-and-getting-emotional-support/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4242785\",\n      \"title\": \"UCF Women's Basketball vs. Jacksonville\",\n      \"category\": \"Sports\",\n      \"tags\": [\n        \"UCF Athletics\",\n        \"Addition Financial Arena\"\n      ],\n      \"startsAt\": \"2026-11-23T18:30:00-05:00\",\n      \"endsAt\": \"2026-11-23T21:00:00-05:00\",\n      \"date\": \"2026-11-23\",\n      \"startTime\": \"18:30\",\n      \"endTime\": \"21:00\",\n      \"dateLabel\": \"Monday, November 23, 2026\",\n      \"timeLabel\": \"6:30 PM – 9:00 PM\",\n      \"location\": \"Addition Financial Arena\",\n      \"mapUrl\": \"https://maps.app.goo.gl/ckEjpwWkRra5LCUF8\",\n      \"mapQuery\": \"Addition Financial Arena, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Athletics\",\n      \"contactEmail\": \"tconner@athletics.ucf.edu\",\n      \"contactPhone\": \"4078231000\",\n      \"about\": \"Cheer on the Knights as UCF Women's Basketball hosts Jacksonville at Addition Financial Arena.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4242785/ucf-womens-basketball-vs-jacksonville/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": 4.0,\n        \"count\": 1\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": true\n    },\n    {\n      \"id\": \"4151821\",\n      \"title\": \"Blues for an Alabama Sky | Theatre UCF\",\n      \"category\": \"Concert/Performance\",\n      \"tags\": [\n        \"theatre\",\n        \"Theatre UCF\"\n      ],\n      \"startsAt\": \"2026-11-28T14:00:00-05:00\",\n      \"endsAt\": \"2026-11-28T16:30:00-05:00\",\n      \"date\": \"2026-11-28\",\n      \"startTime\": \"14:00\",\n      \"endTime\": \"16:30\",\n      \"dateLabel\": \"Saturday, November 28, 2026\",\n      \"timeLabel\": \"2:00 PM – 4:30 PM\",\n      \"location\": \"Theatre UCF: Black Box: TH 6\",\n      \"mapUrl\": \"http://map.ucf.edu/?show=6\",\n      \"mapQuery\": \"Theatre UCF: Black Box: TH 6, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF School of Performing Arts Box Office\",\n      \"contactEmail\": \"boxoffice@ucf.edu\",\n      \"contactPhone\": \"4078231500\",\n      \"about\": \"Theatre UCF performs Pearl Cleage's play set in 1930s Harlem, following five friends through one summer.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": \"https://cah.ucf.edu/events/detail/alabama-sky/\",\n      \"registrationInfo\": \"Tickets: $25 standard, $10 students w/UCF or student ID.\",\n      \"ucfUrl\": \"https://events.ucf.edu/event/4151821/blues-for-an-alabama-sky-theatre-ucf/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4253984\",\n      \"title\": \"Alcoholics Anonymous\",\n      \"category\": \"Meeting\",\n      \"tags\": [\n        \"AA\",\n        \"Support Group\"\n      ],\n      \"startsAt\": \"2026-11-29T19:00:00-05:00\",\n      \"endsAt\": \"2026-11-29T20:00:00-05:00\",\n      \"date\": \"2026-11-29\",\n      \"startTime\": \"19:00\",\n      \"endTime\": \"20:00\",\n      \"dateLabel\": \"Sunday, November 29, 2026\",\n      \"timeLabel\": \"7:00 PM – 8:00 PM\",\n      \"location\": \"Student Union 313: Admin: 313\",\n      \"mapUrl\": \"https://www.ucf.edu/location/student-union/\",\n      \"mapQuery\": \"Student Union 313: Admin: 313, University of Central Florida, Orlando, FL\",\n      \"parking\": \"Visitor parking is available in Garage H (Lot H1), adjacent to the Student Union. Rates: $2/hr, max $8/day. Pay at the kiosk or via the ParkMobile app — Zone 2441.\",\n      \"contactName\": \"Collegiate Recovery\",\n      \"contactEmail\": \"crc@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"An open AA meeting hosted by Collegiate Recovery, for anyone who wants support.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": null,\n      \"registrationInfo\": null,\n      \"ucfUrl\": \"https://events.ucf.edu/event/4253984/alcoholics-anonymous/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    },\n    {\n      \"id\": \"4190556\",\n      \"title\": \"Knight of Zen\",\n      \"category\": \"Recreation & Exercise\",\n      \"tags\": [\n        \"Yoga\",\n        \"destress\"\n      ],\n      \"startsAt\": \"2026-11-29T19:00:00-05:00\",\n      \"endsAt\": \"2026-11-29T19:45:00-05:00\",\n      \"date\": \"2026-11-29\",\n      \"startTime\": \"19:00\",\n      \"endTime\": \"19:45\",\n      \"dateLabel\": \"Sunday, November 29, 2026\",\n      \"timeLabel\": \"7:00 PM – 7:45 PM\",\n      \"location\": \"RWC Green Space\",\n      \"mapUrl\": \"https://www.ucf.edu/location/recreation-and-wellness-center/\",\n      \"mapQuery\": \"RWC Green Space, University of Central Florida, Orlando, FL\",\n      \"parking\": null,\n      \"contactName\": \"UCF Fitness\",\n      \"contactEmail\": \"fitness@ucf.edu\",\n      \"contactPhone\": null,\n      \"about\": \"An evening yoga session on the RWC Green Space to relax before finals.\",\n      \"virtual\": false,\n      \"joinUrl\": null,\n      \"registrationUrl\": \"https://ucfrwc.org/Program/GetProgramDetails?courseId=11a4e1b5-27ac-4a25-b5ca-37b6b0f1c515\",\n      \"registrationInfo\": \"Registration opens one week in advance.\",\n      \"ucfUrl\": \"https://events.ucf.edu/event/4190556/knight-of-zen/\",\n      \"edited\": false,\n      \"rating\": {\n        \"average\": null,\n        \"count\": 0\n      },\n      \"saved\": false,\n      \"reviewedByMe\": false,\n      \"canEdit\": false\n    }\n  ]\n}",
+          "statusCode": 200,
+          "label": "All",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "8254b361-0ec4-40e1-a0fa-cd0f4fded7f1",
+      "method": "get",
+      "endpoint": "events/:eventId",
+      "responses": [
+        {
+          "uuid": "3da666df-1b6e-4e86-a57d-a81a553ff939",
+          "body": "{\n  \"id\": \"4152009\",\n  \"title\": \"Fall 2026 BFA Exhibition\",\n  \"category\": \"Arts Exhibit\",\n  \"tags\": [\n    \"ucf art gallery\"\n  ],\n  \"startsAt\": \"2026-11-23T10:00:00-05:00\",\n  \"endsAt\": \"2026-11-23T17:00:00-05:00\",\n  \"date\": \"2026-11-23\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"17:00\",\n  \"dateLabel\": \"Monday, November 23, 2026\",\n  \"timeLabel\": \"10:00 AM – 5:00 PM\",\n  \"location\": \"UCF Art Gallery\",\n  \"mapUrl\": \"https://www.google.com/maps/place/School+of+Visual+Arts+and+Design/@28.6028876,-81.2031242,15z\",\n  \"mapQuery\": \"UCF Art Gallery, University of Central Florida, Orlando, FL\",\n  \"parking\": null,\n  \"contactName\": \"UCF Art Gallery\",\n  \"contactEmail\": \"gallery@ucf.edu\",\n  \"contactPhone\": null,\n  \"about\": \"Senior BFA students in art, animation, illustration, photography and more show their work in the UCF Art Gallery.\\n\\nFree and open to everyone.\",\n  \"virtual\": false,\n  \"joinUrl\": null,\n  \"registrationUrl\": null,\n  \"registrationInfo\": null,\n  \"ucfUrl\": \"https://events.ucf.edu/event/4152009/fall-2026-bfa-exhibition/\",\n  \"edited\": false,\n  \"rating\": {\n    \"average\": 4.5,\n    \"count\": 2\n  },\n  \"saved\": true,\n  \"reviewedByMe\": false,\n  \"canEdit\": false\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "0fc11366-583e-4756-a1a9-c025c6c407d5",
+      "method": "patch",
+      "endpoint": "events/:eventId",
+      "responses": [
+        {
+          "uuid": "d8276a48-6e46-4f06-9991-416ccff181cd",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "bb286c78-2550-4697-bd69-d5ead75796dc",
+          "body": "{\n  \"id\": \"4242785\",\n  \"title\": \"UCF Women's Basketball vs. Jacksonville\",\n  \"category\": \"Sports\",\n  \"tags\": [\n    \"UCF Athletics\",\n    \"Addition Financial Arena\"\n  ],\n  \"startsAt\": \"2026-11-23T18:30:00-05:00\",\n  \"endsAt\": \"2026-11-23T21:00:00-05:00\",\n  \"date\": \"2026-11-23\",\n  \"startTime\": \"18:30\",\n  \"endTime\": \"21:00\",\n  \"dateLabel\": \"Monday, November 23, 2026\",\n  \"timeLabel\": \"6:30 PM – 9:00 PM\",\n  \"location\": \"Addition Financial Arena\",\n  \"mapUrl\": \"https://maps.app.goo.gl/ckEjpwWkRra5LCUF8\",\n  \"mapQuery\": \"Addition Financial Arena, University of Central Florida, Orlando, FL\",\n  \"parking\": null,\n  \"contactName\": \"UCF Athletics\",\n  \"contactEmail\": \"tconner@athletics.ucf.edu\",\n  \"contactPhone\": \"4078231000\",\n  \"about\": \"Cheer on the Knights as UCF Women's Basketball hosts Jacksonville at Addition Financial Arena.\",\n  \"virtual\": false,\n  \"joinUrl\": null,\n  \"registrationUrl\": null,\n  \"registrationInfo\": null,\n  \"ucfUrl\": \"https://events.ucf.edu/event/4242785/ucf-womens-basketball-vs-jacksonville/\",\n  \"edited\": true,\n  \"rating\": {\n    \"average\": 4.0,\n    \"count\": 1\n  },\n  \"saved\": false,\n  \"reviewedByMe\": false,\n  \"canEdit\": true\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "416cfb54-7b8d-498b-92ba-453c71b91a6d",
+      "method": "post",
+      "endpoint": "events/:eventId/save",
+      "responses": [
+        {
+          "uuid": "a6b7418e-a632-41c0-ae80-eefe9aba2cdf",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "b34c8a91-74ae-4097-aed8-3daa93aa8978",
+          "body": "{\n  \"saved\": true\n}",
+          "statusCode": 201,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "241c0b81-b01e-4e2f-b332-265f072973c5",
+      "method": "delete",
+      "endpoint": "events/:eventId/save",
+      "responses": [
+        {
+          "uuid": "5bce929b-1098-4d70-beb0-1c205f1592c3",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "93d3c754-5271-4152-b2dd-948643ad6166",
+          "body": "{\n  \"saved\": false\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "f6faabad-266e-4dea-8906-c05459de1570",
+      "method": "get",
+      "endpoint": "events/:eventId/reviews",
+      "responses": [
+        {
+          "uuid": "151b9ecd-780d-487b-8333-7e6ef4099f6b",
+          "body": "{\n  \"average\": 4.5,\n  \"count\": 2,\n  \"reviews\": [\n    {\n      \"id\": \"r2\",\n      \"author\": \"Carlos T.\",\n      \"createdAt\": \"2026-11-22T13:05:00-05:00\",\n      \"dateLabel\": \"Nov 22, 2026\",\n      \"rating\": 4,\n      \"text\": \"Great show. The gallery gets crowded around noon, so go early.\",\n      \"mine\": false\n    },\n    {\n      \"id\": \"r1\",\n      \"author\": \"Priya M.\",\n      \"createdAt\": \"2026-11-21T18:40:00-05:00\",\n      \"dateLabel\": \"Nov 21, 2026\",\n      \"rating\": 5,\n      \"text\": \"Some of the best student work I've seen. The animation pieces were amazing.\",\n      \"mine\": false\n    }\n  ]\n}",
+          "statusCode": 200,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "f7a31483-13c2-415a-a57e-14822ba5e869",
+      "method": "post",
+      "endpoint": "events/:eventId/reviews",
+      "responses": [
+        {
+          "uuid": "e3ffb5ce-d1ac-45a9-b5d2-290c2af048b5",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "9d4022e6-94bc-4263-aeb3-10ce68e04522",
+          "body": "{\n  \"id\": \"r100\",\n  \"author\": \"knight\",\n  \"createdAt\": \"2026-11-23T15:00:00-05:00\",\n  \"dateLabel\": \"Nov 23, 2026\",\n  \"rating\": 5,\n  \"text\": \"Great show!\",\n  \"mine\": true\n}",
+          "statusCode": 201,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    },
+    {
+      "uuid": "184d8c82-9962-46bc-b455-be5f949665db",
+      "method": "post",
+      "endpoint": "reviews/:reviewId/report",
+      "responses": [
+        {
+          "uuid": "b2326d97-058d-49df-88c4-10819b313b31",
+          "body": "{\n  \"error\": \"unauthorized\",\n  \"message\": \"Please log in again.\"\n}",
+          "statusCode": 401,
+          "label": "No token",
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ]
+        },
+        {
+          "uuid": "6885a065-5f1d-48b0-ae3c-77ffcfdf8165",
+          "body": "{\n  \"message\": \"Thanks. This review has been reported.\"\n}",
+          "statusCode": 201,
+          "label": "Success",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "ae668b44-2dfd-4ddf-8e4c-39d929272a4b"
+    },
+    {
+      "type": "route",
+      "uuid": "2424b718-9819-433d-800b-969bef848c85"
+    },
+    {
+      "type": "route",
+      "uuid": "6aa4787a-337d-4a87-b465-4f0b86ad47cd"
+    },
+    {
+      "type": "route",
+      "uuid": "47be7d0c-4856-44d5-bace-f64f43104efa"
+    },
+    {
+      "type": "route",
+      "uuid": "816204d8-97d2-4a6c-ab46-63ad0282c785"
+    },
+    {
+      "type": "route",
+      "uuid": "d2306782-0946-4c95-af04-3497e9b213fc"
+    },
+    {
+      "type": "route",
+      "uuid": "2ca5cce9-a288-4058-9b8b-7ea07cec42e7"
+    },
+    {
+      "type": "route",
+      "uuid": "8254b361-0ec4-40e1-a0fa-cd0f4fded7f1"
+    },
+    {
+      "type": "route",
+      "uuid": "0fc11366-583e-4756-a1a9-c025c6c407d5"
+    },
+    {
+      "type": "route",
+      "uuid": "416cfb54-7b8d-498b-92ba-453c71b91a6d"
+    },
+    {
+      "type": "route",
+      "uuid": "241c0b81-b01e-4e2f-b332-265f072973c5"
+    },
+    {
+      "type": "route",
+      "uuid": "f6faabad-266e-4dea-8906-c05459de1570"
+    },
+    {
+      "type": "route",
+      "uuid": "f7a31483-13c2-415a-a57e-14822ba5e869"
+    },
+    {
+      "type": "route",
+      "uuid": "184d8c82-9962-46bc-b455-be5f949665db"
+    }
+  ],
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ]
+}

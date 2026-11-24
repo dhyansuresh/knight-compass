@@ -1,13 +1,15 @@
 package edu.ucf.knightcompass;
 
 final class Event {
-    final String title, date, time, building, room, organizer, contact, about;
+    final String id, title, date, time, building, room, organizer, contact, about;
     final boolean virtual;
     final String registrationURL;
-    Event(String title, String date, String time, String building, String room, String organizer, String contact, String about, boolean virtual, String registrationURL) {
+    Event(String id, String title, String date, String time, String building, String room, String organizer, String contact, String about, boolean virtual, String registrationURL) {
+        this.id = id;
         this.title = title; this.date = date; this.time = time; this.building = building;
         this.room = room; this.organizer = organizer; this.contact = contact;
         this.about = about; this.virtual = virtual; this.registrationURL = registrationURL;
+
     }
     String address() { return "4000 Central Florida Blvd, Orlando, FL"; }
     String mapQuery() { return "UCF "+building+", "+address(); }

@@ -21,11 +21,10 @@ public class Repository {
     // testing data. delete once db is made
     private final Map<String, User> users = new HashMap<>();
     private final Set<String> saved = new HashSet<>();
-    private static final String TEST_HOST = "host@ucf.edu";
-    private static final String TEST_HOST_EVENT = "e0";
+
 
     static boolean isUcfEmail(String email) {
-        if (email = null) {
+        if (email == null) {
             return false;
         }
         String e = email.toLowerCase(Locale.ROOT);
